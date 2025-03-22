@@ -1,9 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Acme&display=swap');
+
 body {
-  font-family: Helvetica;
+  font-family: 'San Francisco', Helvetica, Arial, san-serif;
   margin-top: 35px;
+  padding-left: 24px;
   overflow-x: hidden;
 }
-
+.logo{
+  font-family: "Acme", sans-serif;
+}
 .loading {
   opacity: 0;
   pointer-events: none;
@@ -14,7 +19,17 @@ body {
   width: 100%;
   transition: opacity .5s cubic-bezier(.19,1,.22,1);
 }
+.message-text.sent.blue:hover{
+  cursor: zoom-in;
+  -webkit-box-shadow: 0px 4px 33px 3px rgba(255,236,25,1);
+}
+.twitter-container.current:hover{
+  -webkit-box-shadow: 0px 4px 33px 3px rgba(255,236,25,1);
 
+}
+.site-preview:hover{
+  -webkit-box-shadow: 0px 4px 33px 3px rgba(255,236,25,1);
+}
 .message-container {
   display: flex;
   width: fit-content;
@@ -165,8 +180,8 @@ body {
     }
 .site-preview {
   background-color: white;
-  border: 4px solid #AAAAAA;
-  border-radius: 24px;
+  border: 2px solid #AAAAAA;
+  border-radius: 12px;
   justify-self: center;
   align-self: center;
   overflow: hidden;
@@ -187,7 +202,8 @@ body {
 #embed-container > * {
   width: 50vw!important;
   min-width: 50vw!important;
-  height: 50vh;
+  height: 90vh; 
+  /* idk why this isn't taller  */
   position: relative;
 }
 
@@ -240,6 +256,10 @@ body {
   justify-content: center;
   column-gap: 22px;
 }
+.btn:hover{
+  background: #0e6bad;
+}
+
 
 .button {
   background-color: #EEE;
