@@ -1,3 +1,31 @@
+/* INTRO */
+
+const messages = document.querySelectorAll('.message:not(.complete)')
+const goToOmarUpon = document.querySelector('.message.link')
+const embedContainer = document.getElementById('embed-container')
+let current = 1 // start at 1 because searching for nth-of-type css selector
+let i = 0
+let skippedLinks = 0
+let currentLink = null
+
+setTimeout(() => {
+  document.querySelector('.message.complete').classList.remove('tail')
+  messages[0].classList.add('complete')
+  messages[0].classList.add('tail')
+  messages[1].style.opacity = '1'
+}, 1000);
+
+setTimeout(() => {
+  goToOmarUpon.classList.add('complete')
+}, 2000);
+
+goToOmarUpon.addEventListener('click', () => {
+  document.querySelector('.intro').style.opacity = 0;
+  document.querySelectorAll('.loading').forEach((element) => {
+    element.classList.remove('loading')
+  })
+})
+
 
 /* EXTRACTING & CACHING INFO FROM SPREADSHEET */
 const SPREADSHEET_ID = "1GasetHLhWYkIYfxPPYNBFM4djQfyBWpMK35og7qJY3o";
@@ -47,7 +75,7 @@ async function cacheArray(key, data) {
 }
 
 /* HANDLING EMBEDS/IFRAMES */
-function insertiframes(link) {
+async function insertiframes(link) {
   if (link.includes('twitter.com') || link.includes('https://x.com/')) {
     embedTweet(link)
   } else {
@@ -60,28 +88,42 @@ function extractTweetId(url) {
   return match ? match[1] : null;
 }
 
-function embedTweet(url) {
+async function embedTweet(url) {
   const tweetId = extractTweetId(url);
-  const embedContainer = document.getElementById('embed-container')
-
+  const twitterDiv = document.createElement("div");
+  twitterDiv.classList.add('twitter-container')
+  embedContainer.insertAdjacentElement('beforeend', twitterDiv)
+  if (i === current) {
+    if (currentLink) {
+      currentLink.classList.remove('current')
+    }
+    currentLink = twitterDiv
+    twitterDiv.classList.add('current')
+  }
   twttr.widgets.createTweet(
     tweetId,
-    embedContainer,
+    twitterDiv,
     {
-      align: "center"
+      align: "center",
+      width: Math.min(window.innerWidth * .65, 548)
     }
-  ).catch(err => console.error("Error embedding tweet:", err));
+  ).catch(err => { 
+    console.error("Error embedding tweet:", err)
+  });
+  i++
 }
 
 function embedWebsite(url) {
-  const iframe = document.createElement("iframe");
-  iframe.src = url;
-  iframe.onload = function () { console.log('loaded iframe') };
-  iframe.onerror = function () {
-    document.getElementById('embed-container').innerHTML = `<a href="${url}" target="_blank">Open in new tab</a>`;
-  };
-
-  document.getElementById('embed-container').appendChild(iframe);
+  console.log(url)
+  embedContainer.insertAdjacentHTML('beforeend', `<div class="site-preview"><object type="text/html" data="${url}" style="width:100%; height:100%"><a href="${url}"><img src="https://api.screenshotmachine.com?key=86b561&url=${url}&dimension=1024x768"></a></object></div>`)
+  if (i === current) {
+    if (currentLink) {
+      currentLink.classList.remove('current')
+    }
+    currentLink = document.querySelector(`#embed-container div:nth-of-type(${current + 1})`)
+    currentLink.classList.add('current')
+  }
+  i++
 }
 
 /*
@@ -107,17 +149,78 @@ async function fetchMetadata(url) {
   }
 }*/
 
-let i = 0
 let links = getLinks("links").then(function (result) {
-  console.log(result)
   let shuffledData = result.map(value => ({ value, sort: Math.random() }))
     .sort((a, b) => a.sort - b.sort)
     .map(({ value }) => value)
 
-  if (i < 3) {
-    insertiframes(shuffledData[i].Link)
-    i++
+  while (i + skippedLinks < 3) {
+    insertiframes(shuffledData[i + skippedLinks].Link)
   }
 })
+
+/*function prev() {
+  if (current > 1) {
+    current--
+  } else {
+    current = i
+  }
+
+  if (currentLink) {
+    currentLink.classList.remove('current')
+  }
+  currentLink = document.querySelector(`#embed-container div:nth-of-type(${current + 1})`)
+  currentLink.classList.add('current')
+  embedContainer.style.transform = `translate3d(${-34 * current}vw, 0px, 0px)`  
+}
+
+function next() {
+  current++
+  if (current > i - 1) {
+    i++
+    insertiframes(shuffledData[i + skippedLinks].Link)  
+  }
+  if (currentLink) {
+    currentLink.classList.remove('current')
+  }
+  currentLink = document.querySelector(`#embed-container div:nth-of-type(${current + 1})`)
+  currentLink.classList.add('current')
+  embedContainer.style.transform = `translate3d(${-34 * current}vw, 0px, 0px)`  
+
+}*/
+
+function next() {
+  current++
+  if (current > i - 1) {
+    i++
+    insertiframes(shuffledData[i + skippedLinks].Link)  
+  }
+  if (currentLink) {
+    currentLink.classList.remove('current')
+  }
+  currentLink = document.querySelector(`#embed-container div:nth-of-type(${current + 1})`)
+  currentLink.classList.add('current')
+  embedContainer.style.transform = `translate3d(${-34 * current}vw, 0px, 0px)`  
+  console.log('next')
+}
+
+function prev() {
+  console.log('pre')
+  if (current > 1) {
+    current--
+  } else {
+    current = i
+  }
+
+  if (currentLink) {
+    currentLink.classList.remove('current')
+  }
+  currentLink = document.querySelector(`#embed-container div:nth-of-type(${current + 1})`)
+  currentLink.classList.add('current')
+  embedContainer.style.transform = `translate3d(${-34 * current}vw, 0px, 0px)`  
+
+}
+
+
 
 

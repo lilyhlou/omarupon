@@ -5,18 +5,63 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     
     <title>OmarUpon</title>
-    
-    <!-- Call on style.css -->
     <link rel="stylesheet" href="./style.css" type="text/css" />
-    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-    <script src="script.js" type="text/javascript"></script>
   </head>
   <body>
-    
-    
-    <h1>OmarUpon</h1>
-    <div id="embed-container">
+    <div class="intro">
+      <div class="message-container">
+        <div class="message complete tail">
+          <div class="message-text animated-ellipsis">
+            <div class="message-text-wrapper">
+              <div class="animated-ellipsis__wrapper">
+                <span></span><span></span><span></span>
+              </div>
+            </div>
+          </div>
+          <div class="message-text sent">
+            <div class="message-text-wrapper">
+              Welcome to OmarUpon!
+            </div>
+          </div>
+        </div>
+        <div class="message">
+          <div class="message-text animated-ellipsis">
+            <div class="message-text-wrapper">
+              <div class="animated-ellipsis__wrapper">
+                <span></span><span></span><span></span>
+              </div>
+            </div>
+          </div>
+          <div class="message-text sent">
+            <div class="message-text-wrapper">
+              What will we find today?
+            </div>
+          </div>
+        </div>
+        <div class="message link hide">
+          <div class="message-text animated-ellipsis">
+            <div class="message-text-wrapper">
+              <div class="animated-ellipsis__wrapper">
+                <span></span><span></span><span></span>
+              </div>
+            </div>
+          </div>
+          <div class="message-text sent blue">
+            <div class="message-text-wrapper">
+              Let’s take a look! →
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  
+    <h1 class="loading">OmarUpon</h1>
+    <div class="loading" id="embed-container">
+    </div>
+    <div class="loading btns">
+      <div class="btn prev" onclick="prev()">← Back</div>
+      <div class="btn next" onclick="next()">Let me see what’s next! →</div>  
+    </div>
   </body>
+  <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+  <script src="script.js" type="text/javascript"></script>
 </html>
