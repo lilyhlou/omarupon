@@ -3,10 +3,10 @@
 const messages = document.querySelectorAll('.message:not(.complete)')
 const goToOmarUpon = document.querySelector('.message.link')
 const embedContainer = document.getElementById('embed-container')
-let current = 1 // start at 1 because searching for nth-of-type css selector
+const prevBtn = document.querySelector('.btn.prev')
+let currentSlide = null
 let i = 0
-let skippedLinks = 0
-let currentLink = null
+let linksLoaded = 0
 
 setTimeout(() => {
   document.querySelector('.message.complete').classList.remove('tail')
@@ -20,12 +20,11 @@ setTimeout(() => {
 }, 2000);
 
 goToOmarUpon.addEventListener('click', () => {
-  document.querySelector('.intro').style.opacity = 0;
+  document.querySelector('.intro').style.display = 'none';
   document.querySelectorAll('.loading').forEach((element) => {
     element.classList.remove('loading')
   })
 })
-
 
 /* EXTRACTING & CACHING INFO FROM SPREADSHEET */
 const SPREADSHEET_ID = "1GasetHLhWYkIYfxPPYNBFM4djQfyBWpMK35og7qJY3o";
@@ -91,134 +90,66 @@ function extractTweetId(url) {
 async function embedTweet(url) {
   const tweetId = extractTweetId(url);
   const twitterDiv = document.createElement("div");
+  twitterDiv.setAttribute('data-idx', i)
   twitterDiv.classList.add('twitter-container')
+  
+  currentSlide = twitterDiv
+  linksLoaded++
   embedContainer.insertAdjacentElement('beforeend', twitterDiv)
-  if (i === current) {
-    if (currentLink) {
-      currentLink.classList.remove('current')
-    }
-    currentLink = twitterDiv
-    twitterDiv.classList.add('current')
-  }
   twttr.widgets.createTweet(
     tweetId,
     twitterDiv,
     {
-      align: "center",
-      width: Math.min(window.innerWidth * .65, 548)
+      align: "center"
     }
   ).catch(err => { 
     console.error("Error embedding tweet:", err)
   });
-  i++
 }
 
 function embedWebsite(url) {
-  console.log(url)
-  embedContainer.insertAdjacentHTML('beforeend', `<div class="site-preview"><object type="text/html" data="${url}" style="width:100%; height:100%"><a href="${url}"><img src="https://api.screenshotmachine.com?key=86b561&url=${url}&dimension=1024x768"></a></object></div>`)
-  if (i === current) {
-    if (currentLink) {
-      currentLink.classList.remove('current')
-    }
-    currentLink = document.querySelector(`#embed-container div:nth-of-type(${current + 1})`)
-    currentLink.classList.add('current')
-  }
-  i++
+  embedContainer.insertAdjacentHTML('beforeend', `<div class="site-preview ${i === linksLoaded ? '' : 'hide'}" data-idx="${linksLoaded}"><object type="text/html" data="${url}" style="width:100%; height:100%"><a href="${url}"><img src="https://api.screenshotmachine.com?key=86b561&url=${url}&dimension=1024x768"></a></object></div>`)
+  currentSlide = embedContainer.lastChild
+  linksLoaded++
 }
-
-/*
-for pulling title / description from urls
-async function fetchMetadata(url) {
-  const corsProxy = "https://cors-anywhere.herokuapp.com/"; // Public CORS proxy
-
-  try {
-    const response = await fetch(corsProxy + url, { headers: { "X-Requested-With": "XMLHttpRequest" } });
-    const text = await response.text();
-
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(text, "text/html");
-
-    const title = doc.querySelector("title")?.innerText || "No title";
-    const description = doc.querySelector('meta[name="description"]')?.content || "No description";
-    const thumbnail = doc.querySelector('meta[property="og:image"]')?.content || "No image";
-
-    return { title, description, thumbnail, url };
-  } catch (error) {
-    console.error("Error fetching metadata:", error);
-    return { title: "Error", description: "Failed to load", thumbnail: "", url };
-  }
-}*/
 
 let links = getLinks("links").then(function (result) {
-  let shuffledData = result.map(value => ({ value, sort: Math.random() }))
+  links = result.map(value => ({ value, sort: Math.random() }))
     .sort((a, b) => a.sort - b.sort)
     .map(({ value }) => value)
-
-  while (i + skippedLinks < 3) {
-    insertiframes(shuffledData[i + skippedLinks].Link)
-  }
+    insertiframes(links[i].Link)
 })
 
-/*function prev() {
-  if (current > 1) {
-    current--
+function next() {
+  currentSlide.classList.add('hide')
+  i++
+  if (i > 0) {
+    prevBtn.classList.remove('disabled')
+  }
+
+  if (i >= links.length) {
+    i = 0
+    prevBtn.classList.add('disabled')
+  }
+  currentSlide = document.querySelector(`.site-preview[data-idx="${i}"], .twitter-container[data-idx="${i}"]`)
+  if (currentSlide) {
+    currentSlide.classList.remove('hide')
   } else {
-    current = i
+    insertiframes(links[i].Link)
   }
-
-  if (currentLink) {
-    currentLink.classList.remove('current')
-  }
-  currentLink = document.querySelector(`#embed-container div:nth-of-type(${current + 1})`)
-  currentLink.classList.add('current')
-  embedContainer.style.transform = `translate3d(${-34 * current}vw, 0px, 0px)`  
-}
-
-function next() {
-  current++
-  if (current > i - 1) {
-    i++
-    insertiframes(shuffledData[i + skippedLinks].Link)  
-  }
-  if (currentLink) {
-    currentLink.classList.remove('current')
-  }
-  currentLink = document.querySelector(`#embed-container div:nth-of-type(${current + 1})`)
-  currentLink.classList.add('current')
-  embedContainer.style.transform = `translate3d(${-34 * current}vw, 0px, 0px)`  
-
-}*/
-
-function next() {
-  current++
-  if (current > i - 1) {
-    i++
-    insertiframes(shuffledData[i + skippedLinks].Link)  
-  }
-  if (currentLink) {
-    currentLink.classList.remove('current')
-  }
-  currentLink = document.querySelector(`#embed-container div:nth-of-type(${current + 1})`)
-  currentLink.classList.add('current')
-  embedContainer.style.transform = `translate3d(${-34 * current}vw, 0px, 0px)`  
-  console.log('next')
 }
 
 function prev() {
-  console.log('pre')
-  if (current > 1) {
-    current--
-  } else {
-    current = i
+  currentSlide.classList.add('hide')
+  i--
+  if (i === 0) {
+    prevBtn.classList.add('disabled')
+  } 
+  const slide = document.querySelector(`.site-preview[data-idx="${i}"], .twitter-container[data-idx="${i}"]`)
+  if (slide) {
+    currentSlide = slide
+    slide.classList.remove('hide')
   }
-
-  if (currentLink) {
-    currentLink.classList.remove('current')
-  }
-  currentLink = document.querySelector(`#embed-container div:nth-of-type(${current + 1})`)
-  currentLink.classList.add('current')
-  embedContainer.style.transform = `translate3d(${-34 * current}vw, 0px, 0px)`  
-
 }
 
 
