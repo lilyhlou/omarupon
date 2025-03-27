@@ -37,26 +37,22 @@ async function getLinks(key) {
   const response = await cache.match(key);
 
   if (!response) {
-    return fetchSheet(key)
+    return await fetchSheet(key)
   }
 
   const { data, expiresAt } = await response.json();
   if (Date.now() > expiresAt) {
     await cache.delete(key);
-    fetchSheet(key)
+    await fetchSheet(key)
   }
   return data;
 }
 
 async function fetchSheet(key) {
-  fetch(
-    "https://opensheet.elk.sh/1GasetHLhWYkIYfxPPYNBFM4djQfyBWpMK35og7qJY3o/omars-links"
-  )
-    .then((res) => res.json())
-    .then((data) => {
-      cacheArray(key, data)
-      return data
-    });
+  const res = await fetch("https://opensheet.elk.sh/1GasetHLhWYkIYfxPPYNBFM4djQfyBWpMK35og7qJY3o/omars-links");
+  const data = await res.json();
+  cacheArray(key, data)
+  return data;
 }
 
 async function cacheArray(key, data) {
