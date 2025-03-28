@@ -20,10 +20,13 @@ setTimeout(() => {
 }, 2000);
 
 goToOmarUpon.addEventListener('click', () => {
-  document.querySelector('.intro').style.display = 'none';
-  document.querySelectorAll('.loading').forEach((element) => {
-    element.classList.remove('loading')
-  })
+  document.querySelector('.intro').classList.add('fade-out');
+  setTimeout(() => {
+    document.querySelector('.intro').style.display = 'none';
+    document.querySelectorAll('.loading').forEach((element) => {
+      element.classList.remove('loading')
+    })
+  }, 500);
 })
 
 /* EXTRACTING & CACHING INFO FROM SPREADSHEET */
