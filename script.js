@@ -151,6 +151,38 @@ function prev() {
   }
 }
 
+/* Add sky gradient function */
+function setSkyGradient() {
+  const hour = new Date().getHours();
+  let gradient;
+  
+  // Dawn (5-7)
+  if (hour >= 5 && hour < 7) {
+    gradient = 'linear-gradient(to bottom, rgba(255, 182, 193, 0.5), rgba(255, 192, 203, 0.5))';
+  }
+  // Morning (7-12)
+  else if (hour >= 7 && hour < 12) {
+    gradient = 'linear-gradient(to bottom, rgba(135, 206, 235, 0.5), rgba(176, 224, 230, 0.5))';
+  }
+  // Afternoon (12-17)
+  else if (hour >= 12 && hour < 17) {
+    gradient = 'linear-gradient(to bottom, rgba(30, 144, 255, 0.5), rgba(135, 206, 235, 0.5))';
+  }
+  // Dusk (17-19)
+  else if (hour >= 17 && hour < 19) {
+    gradient = 'linear-gradient(to bottom, rgba(255, 160, 122, 0.5), rgba(255, 182, 193, 0.5))';
+  }
+  // Night (19-5)
+  else {
+    gradient = 'linear-gradient(to bottom, rgba(25, 25, 112, 0.5), rgba(0, 0, 128, 0.5))';
+  }
+  
+  document.body.style.background = gradient;
+}
+
+// Call the function when the page loads
+document.addEventListener('DOMContentLoaded', setSkyGradient);
+
 
 
 
