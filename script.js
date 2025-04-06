@@ -174,7 +174,7 @@ function setSkyGradient() {
   }
   // Night (19-5)
   else {
-    gradient = 'linear-gradient(to bottom, rgba(25, 25, 112, 0.5), rgba(0, 0, 128, 0.5))';
+    gradient = 'linear-gradient(to bottom, rgba(25, 25, 112, 0.35), rgba(53, 201, 232, 0.32))';
   }
   
   document.body.style.background = gradient;
