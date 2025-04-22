@@ -40,7 +40,7 @@ body {
   flex-direction: column;
   width: fit-content;
   min-height: calc(100vh - 50px);
-  margin: 0 20px;
+  margin: 0 auto;
   row-gap: 20px;
   justify-content: center;
   text-align: center;
@@ -234,10 +234,6 @@ body {
 
 /* Add media queries for different screen sizes */
 @media (min-width: 425px) {
-  .message-container {
-    margin: 0 auto;
-  }
-
   .message-text {
     font-size: 32px;
     padding: 24px;
