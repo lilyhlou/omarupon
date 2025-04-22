@@ -40,8 +40,8 @@ body {
   flex-direction: column;
   width: fit-content;
   min-height: calc(100vh - 50px);
-  margin: 0 auto;
-  row-gap: 40px;
+  margin: 0 20px;
+  row-gap: 20px;
   justify-content: center;
   text-align: center;
 }
@@ -76,7 +76,7 @@ body {
   width: 24px;
   height: 16px;
   transform: translateY(-5px);
-  left: -17px;
+  left: -21px;
   border-top-right-radius: 54%;  
   background-color: white;
 }
@@ -132,8 +132,8 @@ body {
   display: flex;
   align-self: flex-start;
   width: fit-content;
-  font-size: 32px;
-  padding: 24px 26px;
+  font-size: 20px;
+  padding: 12px 18px;
   border-radius: 36px;
   color: black;
   background-color: #E7E4E4;
@@ -233,15 +233,18 @@ body {
 }
 
 /* Add media queries for different screen sizes */
-@media screen and (max-width: 768px) {
-  .site-preview {
-    height: 70vh;
+@media (min-width: 425px) {
+  .message-container {
+    margin: 0 auto;
   }
-}
 
-@media screen and (max-width: 425px) {
-  .site-preview {
-    height: 60vh;
+  .message-text {
+    font-size: 32px;
+    padding: 24px;
+  }
+
+  .message.complete.tail .sent::after {
+    left: -17px;
   }
 }
 
